@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useLanguage } from '@/lib/language';
+import { t, type Key } from '@/lib/i18n';
 
 interface FormData {
   doctorId: string;
@@ -11,8 +13,9 @@ interface FormData {
 
 export default function AppointmentsPage() {
   const { register, handleSubmit } = useForm<FormData>();
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<{ key: Key; error: boolean } | null>(null);
   const [doctors, setDoctors] = useState<{ id: string; name: string }[]>([]);
+  const { lang } = useLanguage();
 
   useEffect(() => {
     fetch('/api/doctors')
@@ -31,51 +34,54 @@ export default function AppointmentsPage() {
       }),
     });
     if (res.ok) {
-      setMessage('Appointment booked');
+      setMessage({ key: 'appointmentBooked', error: false });
     } else {
-      const err = await res.json();
-      setMessage(err.error || 'Error');
+      setMessage({ key: 'error', error: true });
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="mx-auto w-full max-w-md">
-        <h1 className="mb-4 text-xl text-[var(--primary)]">Book Appointment</h1>
+        <h1 className="mb-4 text-xl text-[var(--primary)]">{t(lang, 'bookAppointment')}</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 rounded bg-white p-4 shadow">
           <div>
-            <label>Doctor</label>
+            <label>{t(lang, 'doctor')}</label>
             <select
               {...register('doctorId')}
-            className="block w-full border px-2 py-1"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Select a doctor
-            </option>
-            {doctors.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name}
+              className="block w-full border px-2 py-1"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                {t(lang, 'selectDoctor')}
               </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Start</label>
-          <input type="datetime-local" {...register('start')} className="border px-2 py-1 block" />
-        </div>
-        <div>
-          <label>End</label>
-          <input type="datetime-local" {...register('end')} className="border px-2 py-1 block" />
-        </div>
-        <button
-          type="submit"
-          className="rounded bg-[var(--primary)] px-4 py-2 text-white hover:opacity-90"
-        >
-          Book
-        </button>
-      </form>
-      {message && <p className="mt-4">{message}</p>}
+              {doctors.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>{t(lang, 'start')}</label>
+            <input type="datetime-local" {...register('start')} className="block border px-2 py-1" />
+          </div>
+          <div>
+            <label>{t(lang, 'end')}</label>
+            <input type="datetime-local" {...register('end')} className="block border px-2 py-1" />
+          </div>
+          <button
+            type="submit"
+            className="rounded bg-[var(--primary)] px-4 py-2 text-white hover:opacity-90"
+          >
+            {t(lang, 'bookVerb')}
+          </button>
+        </form>
+        {message && (
+          <p className={`mt-4 ${message.error ? 'text-red-600' : 'text-green-600'}`}>
+            {t(lang, message.key)}
+          </p>
+        )}
       </div>
     </div>
   );

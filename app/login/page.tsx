@@ -3,6 +3,8 @@
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/lib/language';
+import { t } from '@/lib/i18n';
 
 interface FormData {
   email: string;
@@ -12,6 +14,7 @@ interface FormData {
 export default function LoginPage() {
   const { register, handleSubmit, setValue } = useForm<FormData>();
   const router = useRouter();
+  const { lang } = useLanguage();
 
   const onSubmit = async (data: FormData) => {
     const res = await signIn('credentials', {
@@ -21,7 +24,7 @@ export default function LoginPage() {
     if (res && !res.error) {
       router.push('/dashboard');
     } else {
-      alert('Invalid credentials');
+      alert(t(lang, 'error'));
     }
   };
 
@@ -39,25 +42,25 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <div className="space-y-6 w-full max-w-md">
+      <div className="w-full max-w-md space-y-6">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 rounded bg-white p-6 shadow">
           <div>
-            <label className="block">Email</label>
-            <input type="email" {...register('email')} className="border px-2 py-1 w-full" />
+            <label className="block">{t(lang, 'email')}</label>
+            <input type="email" {...register('email')} className="w-full border px-2 py-1" />
           </div>
           <div>
-            <label className="block">Password</label>
-            <input type="password" {...register('password')} className="border px-2 py-1 w-full" />
+            <label className="block">{t(lang, 'password')}</label>
+            <input type="password" {...register('password')} className="w-full border px-2 py-1" />
           </div>
           <button
             type="submit"
             className="w-full rounded bg-[var(--primary)] px-4 py-2 text-white hover:opacity-90"
           >
-            Login
+            {t(lang, 'login')}
           </button>
         </form>
         <div className="rounded bg-white p-4 shadow">
-          <p className="mb-2 font-medium">Demo accounts</p>
+          <p className="mb-2 font-medium">{t(lang, 'demoAccounts')}</p>
           <div className="space-x-2">
             {Object.keys(demos).map((role) => (
               <button
@@ -72,9 +75,9 @@ export default function LoginPage() {
           <table className="mt-2 w-full text-sm">
             <thead>
               <tr className="text-left">
-                <th className="pr-2">Role</th>
-                <th className="pr-2">Email</th>
-                <th>Password</th>
+                <th className="pr-2">{t(lang, 'role')}</th>
+                <th className="pr-2">{t(lang, 'email')}</th>
+                <th>{t(lang, 'password')}</th>
               </tr>
             </thead>
             <tbody>

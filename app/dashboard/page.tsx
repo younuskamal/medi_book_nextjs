@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import AppointmentsClient from './appointments-client';
 import type { Appointment, User } from '@prisma/client';
+import { cookies } from 'next/headers';
+import { t, type Lang, type Key } from '@/lib/i18n';
 
 interface AppointmentWithUser extends Appointment {
   patient?: { user: User | null } | null;
@@ -17,6 +19,8 @@ export default async function DashboardPage() {
   }
 
   const role = (session.user as { role?: string }).role ?? 'PATIENT';
+  const cookieStore = await cookies();
+  const lang = (cookieStore.get('lang')?.value as Lang) || 'en';
 
   let appointments: AppointmentWithUser[] = [];
   if (role === 'DOCTOR') {
@@ -65,8 +69,8 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="mx-auto w-full max-w-3xl">
-        <h1 className="mb-2 text-2xl text-[var(--primary)]">Welcome, {session.user?.name}</h1>
-        <p className="mb-4">Role: {role}</p>
+        <h1 className="mb-2 text-2xl text-[var(--primary)]">{t(lang, 'welcome')}, {session.user?.name}</h1>
+        <p className="mb-4">{t(lang, 'role')}: {t(lang, role.toLowerCase() as Key)}</p>
         {serialized.length > 0 && (
           <div className="overflow-hidden rounded bg-white p-4 shadow">
             <AppointmentsClient role={role} initial={serialized} />

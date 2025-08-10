@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '@/lib/language';
+import { t, type Key } from '@/lib/i18n';
 
 interface Appointment {
   id: string;
@@ -19,6 +21,7 @@ export default function AppointmentsClient({
   initial: Appointment[];
 }) {
   const [appointments, setAppointments] = useState(initial);
+  const { lang } = useLanguage();
 
   const updateStatus = async (id: string, status: string) => {
     const res = await fetch(`/api/appointments/${id}`, {
@@ -31,7 +34,7 @@ export default function AppointmentsClient({
         prev.map((a) => (a.id === id ? { ...a, status } : a))
       );
     } else {
-      alert('Failed to update');
+      alert(t(lang, 'updateFailed'));
     }
   };
 
@@ -51,7 +54,7 @@ export default function AppointmentsClient({
                     : 'rounded bg-[var(--primary)] px-2 py-1 text-white'
               }
             >
-              {s}
+              {t(lang, s.toLowerCase() as Key)}
             </button>
           ))}
         </div>
@@ -63,7 +66,7 @@ export default function AppointmentsClient({
           onClick={() => updateStatus(a.id, 'CANCELLED')}
           className="rounded bg-red-500 px-2 py-1 text-white"
         >
-          Cancel
+          {t(lang, 'cancel')}
         </button>
       );
     }
@@ -75,12 +78,12 @@ export default function AppointmentsClient({
       <thead>
         <tr className="bg-gray-100">
           <th className="border px-2 py-1 text-left">
-            {role === 'DOCTOR' ? 'Patient' : 'Doctor'}
+            {role === 'DOCTOR' ? t(lang, 'patient') : t(lang, 'doctor')}
           </th>
-          <th className="border px-2 py-1 text-left">Start</th>
-          <th className="border px-2 py-1 text-left">End</th>
-          <th className="border px-2 py-1 text-left">Status</th>
-          <th className="border px-2 py-1 text-left">Actions</th>
+          <th className="border px-2 py-1 text-left">{t(lang, 'start')}</th>
+          <th className="border px-2 py-1 text-left">{t(lang, 'end')}</th>
+          <th className="border px-2 py-1 text-left">{t(lang, 'status')}</th>
+          <th className="border px-2 py-1 text-left">{t(lang, 'actions')}</th>
         </tr>
       </thead>
       <tbody>
@@ -95,7 +98,21 @@ export default function AppointmentsClient({
             <td className="border px-2 py-1">
               {new Date(a.endsAtUTC).toLocaleString()}
             </td>
-            <td className="border px-2 py-1">{a.status}</td>
+            <td className="border px-2 py-1">
+              <span
+                className={`rounded px-2 py-1 text-white ${
+                  a.status === 'CANCELLED'
+                    ? 'bg-red-500'
+                    : a.status === 'DONE'
+                      ? 'bg-gray-600'
+                      : a.status === 'CONFIRMED'
+                        ? 'bg-green-600'
+                        : 'bg-yellow-500'
+                }`}
+              >
+                {t(lang, a.status.toLowerCase() as Key)}
+              </span>
+            </td>
             <td className="border px-2 py-1">{actions(a)}</td>
           </tr>
         ))}
