@@ -38,9 +38,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="space-y-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 border rounded bg-white">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+      <div className="space-y-6 w-full max-w-md">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 rounded bg-white p-6 shadow">
           <div>
             <label className="block">Email</label>
             <input type="email" {...register('email')} className="border px-2 py-1 w-full" />
@@ -49,16 +49,21 @@ export default function LoginPage() {
             <label className="block">Password</label>
             <input type="password" {...register('password')} className="border px-2 py-1 w-full" />
           </div>
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 w-full">Login</button>
+          <button
+            type="submit"
+            className="w-full rounded bg-[var(--primary)] px-4 py-2 text-white hover:opacity-90"
+          >
+            Login
+          </button>
         </form>
-        <div className="border rounded p-4 bg-white">
+        <div className="rounded bg-white p-4 shadow">
           <p className="mb-2 font-medium">Demo accounts</p>
           <div className="space-x-2">
             {Object.keys(demos).map((role) => (
               <button
                 key={role}
                 onClick={() => fill(role as keyof typeof demos)}
-                className="bg-gray-200 px-2 py-1 rounded"
+                className="rounded bg-gray-200 px-2 py-1"
               >
                 {role}
               </button>

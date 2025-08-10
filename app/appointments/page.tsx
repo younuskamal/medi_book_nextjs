@@ -39,14 +39,15 @@ export default function AppointmentsPage() {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="mb-4 text-xl">Book Appointment</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label>Doctor</label>
-          <select
-            {...register('doctorId')}
-            className="border px-2 py-1 block"
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="mx-auto w-full max-w-md">
+        <h1 className="mb-4 text-xl text-[var(--primary)]">Book Appointment</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 rounded bg-white p-4 shadow">
+          <div>
+            <label>Doctor</label>
+            <select
+              {...register('doctorId')}
+            className="block w-full border px-2 py-1"
             defaultValue=""
           >
             <option value="" disabled>
@@ -67,9 +68,15 @@ export default function AppointmentsPage() {
           <label>End</label>
           <input type="datetime-local" {...register('end')} className="border px-2 py-1 block" />
         </div>
-        <button type="submit" className="bg-green-500 text-white px-4 py-2">Book</button>
+        <button
+          type="submit"
+          className="rounded bg-[var(--primary)] px-4 py-2 text-white hover:opacity-90"
+        >
+          Book
+        </button>
       </form>
       {message && <p className="mt-4">{message}</p>}
+      </div>
     </div>
   );
 }

@@ -63,12 +63,16 @@ export default async function DashboardPage() {
   }));
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl mb-4">Welcome, {session.user?.name}</h1>
-      <p className="mb-4">Role: {role}</p>
-      {serialized.length > 0 && (
-        <AppointmentsClient role={role} initial={serialized} />
-      )}
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="mx-auto w-full max-w-3xl">
+        <h1 className="mb-2 text-2xl text-[var(--primary)]">Welcome, {session.user?.name}</h1>
+        <p className="mb-4">Role: {role}</p>
+        {serialized.length > 0 && (
+          <div className="overflow-hidden rounded bg-white p-4 shadow">
+            <AppointmentsClient role={role} initial={serialized} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

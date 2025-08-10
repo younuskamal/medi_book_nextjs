@@ -43,7 +43,13 @@ export default function AppointmentsClient({
             <button
               key={s}
               onClick={() => updateStatus(a.id, s)}
-              className="px-2 py-1 border"
+              className={
+                s === 'CANCELLED'
+                  ? 'rounded bg-red-500 px-2 py-1 text-white'
+                  : s === 'DONE'
+                    ? 'rounded bg-green-600 px-2 py-1 text-white'
+                    : 'rounded bg-[var(--primary)] px-2 py-1 text-white'
+              }
             >
               {s}
             </button>
@@ -55,7 +61,7 @@ export default function AppointmentsClient({
       return (
         <button
           onClick={() => updateStatus(a.id, 'CANCELLED')}
-          className="px-2 py-1 border"
+          className="rounded bg-red-500 px-2 py-1 text-white"
         >
           Cancel
         </button>
@@ -65,10 +71,12 @@ export default function AppointmentsClient({
   };
 
   return (
-    <table className="w-full border-collapse">
+    <table className="w-full border-collapse text-sm">
       <thead>
-        <tr className="bg-gray-50">
-          <th className="border px-2 py-1 text-left">{role === 'DOCTOR' ? 'Patient' : 'Doctor'}</th>
+        <tr className="bg-gray-100">
+          <th className="border px-2 py-1 text-left">
+            {role === 'DOCTOR' ? 'Patient' : 'Doctor'}
+          </th>
           <th className="border px-2 py-1 text-left">Start</th>
           <th className="border px-2 py-1 text-left">End</th>
           <th className="border px-2 py-1 text-left">Status</th>
@@ -77,7 +85,7 @@ export default function AppointmentsClient({
       </thead>
       <tbody>
         {appointments.map((a) => (
-          <tr key={a.id} className="border-b">
+          <tr key={a.id} className="border-b last:border-b-0">
             <td className="border px-2 py-1">
               {role === 'DOCTOR' ? a.patient?.user.name : a.doctor?.user.name}
             </td>
