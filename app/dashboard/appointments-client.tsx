@@ -35,36 +35,63 @@ export default function AppointmentsClient({
     }
   };
 
+  const actions = (a: Appointment) => {
+    if (role === 'DOCTOR' || role === 'ADMIN') {
+      return (
+        <div className="space-x-2">
+          {['CONFIRMED', 'CANCELLED', 'DONE'].map((s) => (
+            <button
+              key={s}
+              onClick={() => updateStatus(a.id, s)}
+              className="px-2 py-1 border"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      );
+    }
+    if (role === 'PATIENT' && a.status === 'PENDING') {
+      return (
+        <button
+          onClick={() => updateStatus(a.id, 'CANCELLED')}
+          className="px-2 py-1 border"
+        >
+          Cancel
+        </button>
+      );
+    }
+    return null;
+  };
+
   return (
-    <ul>
-      {appointments.map((a) => (
-        <li key={a.id} className="border p-2 mb-2">
-          {role === 'DOCTOR' ? (
-            <p>Patient: {a.patient?.user.name}</p>
-          ) : (
-            <p>Doctor: {a.doctor?.user.name}</p>
-          )}
-          <p>
-            {new Date(a.startsAtUTC).toLocaleString()} -
-            {` `}
-            {new Date(a.endsAtUTC).toLocaleString()}
-          </p>
-          <p>Status: {a.status}</p>
-          {role === 'DOCTOR' && (
-            <div className="space-x-2 mt-2">
-              {['CONFIRMED', 'CANCELLED', 'DONE'].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => updateStatus(a.id, s)}
-                  className="px-2 py-1 border"
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          )}
-        </li>
-      ))}
-    </ul>
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="bg-gray-50">
+          <th className="border px-2 py-1 text-left">{role === 'DOCTOR' ? 'Patient' : 'Doctor'}</th>
+          <th className="border px-2 py-1 text-left">Start</th>
+          <th className="border px-2 py-1 text-left">End</th>
+          <th className="border px-2 py-1 text-left">Status</th>
+          <th className="border px-2 py-1 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {appointments.map((a) => (
+          <tr key={a.id} className="border-b">
+            <td className="border px-2 py-1">
+              {role === 'DOCTOR' ? a.patient?.user.name : a.doctor?.user.name}
+            </td>
+            <td className="border px-2 py-1">
+              {new Date(a.startsAtUTC).toLocaleString()}
+            </td>
+            <td className="border px-2 py-1">
+              {new Date(a.endsAtUTC).toLocaleString()}
+            </td>
+            <td className="border px-2 py-1">{a.status}</td>
+            <td className="border px-2 py-1">{actions(a)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

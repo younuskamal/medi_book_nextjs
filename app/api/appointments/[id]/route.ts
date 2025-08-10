@@ -34,6 +34,20 @@ export async function PATCH(
     if (!doctor || appointment.doctorId !== doctor.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
+  } else if (user.role === 'PATIENT') {
+    const patient = await prisma.patientProfile.findUnique({
+      where: { userId: user.id! },
+      select: { id: true },
+    });
+    if (
+      !patient ||
+      appointment.patientId !== patient.id ||
+      status !== 'CANCELLED'
+    ) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+  } else if (user.role !== 'ADMIN') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
   const updated = await prisma.appointment.update({

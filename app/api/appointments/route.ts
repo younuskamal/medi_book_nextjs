@@ -54,28 +54,47 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
 
+  const patient = await prisma.patientProfile.findUnique({
+    where: { userId: user.id! },
+    select: { id: true },
+  });
+  if (!patient) {
+    return NextResponse.json({ error: 'Patient profile missing' }, { status: 400 });
+  }
+
+  const start = new Date(startsAtUTC);
+  const end = new Date(endsAtUTC);
+
   const overlapping = await prisma.appointment.findFirst({
     where: {
-      doctorId,
       OR: [
         {
-          startsAtUTC: { lt: new Date(endsAtUTC) },
-          endsAtUTC: { gt: new Date(startsAtUTC) },
+          doctorId,
+          startsAtUTC: { lt: end },
+          endsAtUTC: { gt: start },
+        },
+        {
+          patientId: patient.id,
+          startsAtUTC: { lt: end },
+          endsAtUTC: { gt: start },
         },
       ],
     },
   });
 
   if (overlapping) {
-    return NextResponse.json({ error: 'Time slot unavailable' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Time slot unavailable' },
+      { status: 400 }
+    );
   }
 
   const appointment = await prisma.appointment.create({
     data: {
       doctorId,
-      patientId: user.id!,
-      startsAtUTC: new Date(startsAtUTC),
-      endsAtUTC: new Date(endsAtUTC),
+      patientId: patient.id,
+      startsAtUTC: start,
+      endsAtUTC: end,
     },
   });
 

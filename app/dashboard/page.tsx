@@ -43,6 +43,14 @@ export default async function DashboardPage() {
         orderBy: { startsAtUTC: 'asc' },
       });
     }
+  } else if (role === 'ADMIN') {
+    appointments = await prisma.appointment.findMany({
+      include: {
+        doctor: { include: { user: true } },
+        patient: { include: { user: true } },
+      },
+      orderBy: { startsAtUTC: 'asc' },
+    });
   }
 
   const serialized = appointments.map((a) => ({

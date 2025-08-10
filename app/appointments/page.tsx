@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface FormData {
@@ -12,6 +12,13 @@ interface FormData {
 export default function AppointmentsPage() {
   const { register, handleSubmit } = useForm<FormData>();
   const [message, setMessage] = useState('');
+  const [doctors, setDoctors] = useState<{ id: string; name: string }[]>([]);
+
+  useEffect(() => {
+    fetch('/api/doctors')
+      .then((res) => res.json())
+      .then((data) => setDoctors(data));
+  }, []);
 
   const onSubmit = async (data: FormData) => {
     const res = await fetch('/api/appointments', {
@@ -19,8 +26,8 @@ export default function AppointmentsPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         doctorId: data.doctorId,
-        startsAtUTC: data.start,
-        endsAtUTC: data.end,
+        startsAtUTC: new Date(data.start).toISOString(),
+        endsAtUTC: new Date(data.end).toISOString(),
       }),
     });
     if (res.ok) {
@@ -36,15 +43,28 @@ export default function AppointmentsPage() {
       <h1 className="mb-4 text-xl">Book Appointment</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label>Doctor ID</label>
-          <input {...register('doctorId')} className="border px-2 py-1 block" />
+          <label>Doctor</label>
+          <select
+            {...register('doctorId')}
+            className="border px-2 py-1 block"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              Select a doctor
+            </option>
+            {doctors.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
-          <label>Start (UTC)</label>
+          <label>Start</label>
           <input type="datetime-local" {...register('start')} className="border px-2 py-1 block" />
         </div>
         <div>
-          <label>End (UTC)</label>
+          <label>End</label>
           <input type="datetime-local" {...register('end')} className="border px-2 py-1 block" />
         </div>
         <button type="submit" className="bg-green-500 text-white px-4 py-2">Book</button>
