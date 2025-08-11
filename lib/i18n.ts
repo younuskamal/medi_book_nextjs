@@ -28,6 +28,7 @@ export const translations = {
     done: 'Done',
     pending: 'Pending',
     updateFailed: 'Failed to update',
+    noAppointments: 'No appointments yet',
   },
   ar: {
     dashboard: '\u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645',
@@ -58,6 +59,7 @@ export const translations = {
     done: '\u0645\u0646\u062a\u0647\u064a',
     pending: '\u0642\u064a\u062f \u0627\u0644\u0627\u0646\u062a\u0638\u0627\u0631',
     updateFailed: '\u0641\u0634\u0644 \u0627\u0644\u062a\u062d\u062f\u064a\u062b',
+    noAppointments: '\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0648\u0627\u0639\u064a\u062f',
   },
 };
 

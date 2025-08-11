@@ -71,11 +71,9 @@ export default async function DashboardPage() {
       <div className="mx-auto w-full max-w-3xl">
         <h1 className="mb-2 text-2xl text-[var(--primary)]">{t(lang, 'welcome')}, {session.user?.name}</h1>
         <p className="mb-4">{t(lang, 'role')}: {t(lang, role.toLowerCase() as Key)}</p>
-        {serialized.length > 0 && (
-          <div className="overflow-hidden rounded bg-white p-4 shadow">
-            <AppointmentsClient role={role} initial={serialized} />
-          </div>
-        )}
+        <div className="overflow-hidden rounded bg-white p-4 shadow">
+          <AppointmentsClient role={role} initial={serialized} />
+        </div>
       </div>
     </div>
   );

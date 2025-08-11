@@ -73,6 +73,10 @@ export default function AppointmentsClient({
     return null;
   };
 
+  if (appointments.length === 0) {
+    return <p className="text-center">{t(lang, 'noAppointments')}</p>;
+  }
+
   return (
     <table className="w-full border-collapse text-sm">
       <thead>
