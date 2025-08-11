@@ -41,16 +41,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--background)] p-4 text-[var(--foreground)]">
       <div className="w-full max-w-md space-y-6">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 rounded bg-white p-6 shadow">
           <div>
-            <label className="block">{t(lang, 'email')}</label>
-            <input type="email" {...register('email')} className="w-full border px-2 py-1" />
+            <label className="mb-1 block">{t(lang, 'email')}</label>
+            <input type="email" {...register('email')} className="w-full rounded border px-2 py-1" />
           </div>
           <div>
-            <label className="block">{t(lang, 'password')}</label>
-            <input type="password" {...register('password')} className="w-full border px-2 py-1" />
+            <label className="mb-1 block">{t(lang, 'password')}</label>
+            <input type="password" {...register('password')} className="w-full rounded border px-2 py-1" />
           </div>
           <button
             type="submit"

@@ -21,9 +21,11 @@ export default function AppointmentsClient({
   initial: Appointment[];
 }) {
   const [appointments, setAppointments] = useState(initial);
+  const [loading, setLoading] = useState(false);
   const { lang } = useLanguage();
 
   const updateStatus = async (id: string, status: string) => {
+    setLoading(true);
     const res = await fetch(`/api/appointments/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -36,6 +38,7 @@ export default function AppointmentsClient({
     } else {
       alert(t(lang, 'updateFailed'));
     }
+    setLoading(false);
   };
 
   const actions = (a: Appointment) => {
@@ -46,12 +49,14 @@ export default function AppointmentsClient({
             <button
               key={s}
               onClick={() => updateStatus(a.id, s)}
+              disabled={loading}
               className={
-                s === 'CANCELLED'
-                  ? 'rounded bg-red-500 px-2 py-1 text-white'
+                (s === 'CANCELLED'
+                  ? 'bg-red-500'
                   : s === 'DONE'
-                    ? 'rounded bg-green-600 px-2 py-1 text-white'
-                    : 'rounded bg-[var(--primary)] px-2 py-1 text-white'
+                    ? 'bg-green-600'
+                    : 'bg-[var(--primary)]') +
+                ' rounded px-2 py-1 text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50'
               }
             >
               {t(lang, s.toLowerCase() as Key)}
@@ -64,7 +69,8 @@ export default function AppointmentsClient({
       return (
         <button
           onClick={() => updateStatus(a.id, 'CANCELLED')}
-          className="rounded bg-red-500 px-2 py-1 text-white"
+          disabled={loading}
+          className="rounded bg-red-500 px-2 py-1 text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {t(lang, 'cancel')}
         </button>
@@ -78,9 +84,9 @@ export default function AppointmentsClient({
   }
 
   return (
-    <table className="w-full border-collapse text-sm">
+    <table className="w-full border-collapse text-sm md:text-base">
       <thead>
-        <tr className="bg-gray-100">
+        <tr className="bg-gray-200">
           <th className="border px-2 py-1 text-left">
             {role === 'DOCTOR' ? t(lang, 'patient') : t(lang, 'doctor')}
           </th>
@@ -92,7 +98,7 @@ export default function AppointmentsClient({
       </thead>
       <tbody>
         {appointments.map((a) => (
-          <tr key={a.id} className="border-b last:border-b-0">
+          <tr key={a.id} className="border-b odd:bg-gray-50 last:border-b-0">
             <td className="border px-2 py-1">
               {role === 'DOCTOR' ? a.patient?.user.name : a.doctor?.user.name}
             </td>

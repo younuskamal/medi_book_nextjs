@@ -41,15 +41,15 @@ export default function AppointmentsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-[var(--background)] p-4 text-[var(--foreground)]">
       <div className="mx-auto w-full max-w-md">
         <h1 className="mb-4 text-xl text-[var(--primary)]">{t(lang, 'bookAppointment')}</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 rounded bg-white p-4 shadow">
           <div>
-            <label>{t(lang, 'doctor')}</label>
+            <label className="mb-1 block">{t(lang, 'doctor')}</label>
             <select
               {...register('doctorId')}
-              className="block w-full border px-2 py-1"
+              className="block w-full rounded border px-2 py-1"
               defaultValue=""
             >
               <option value="" disabled>
@@ -63,12 +63,12 @@ export default function AppointmentsPage() {
             </select>
           </div>
           <div>
-            <label>{t(lang, 'start')}</label>
-            <input type="datetime-local" {...register('start')} className="block border px-2 py-1" />
+            <label className="mb-1 block">{t(lang, 'start')}</label>
+            <input type="datetime-local" {...register('start')} className="block w-full rounded border px-2 py-1" />
           </div>
           <div>
-            <label>{t(lang, 'end')}</label>
-            <input type="datetime-local" {...register('end')} className="block border px-2 py-1" />
+            <label className="mb-1 block">{t(lang, 'end')}</label>
+            <input type="datetime-local" {...register('end')} className="block w-full rounded border px-2 py-1" />
           </div>
           <button
             type="submit"

@@ -67,7 +67,7 @@ export default async function DashboardPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-[var(--background)] p-4 text-[var(--foreground)]">
       <div className="mx-auto w-full max-w-3xl">
         <h1 className="mb-2 text-2xl text-[var(--primary)]">{t(lang, 'welcome')}, {session.user?.name}</h1>
         <p className="mb-4">{t(lang, 'role')}: {t(lang, role.toLowerCase() as Key)}</p>
